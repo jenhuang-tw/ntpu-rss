@@ -6,7 +6,7 @@ Paste the link in RSS Reader
 
 - [NTPU 國立臺北大學 - 首頁公告](https://new.ntpu.edu.tw/news)
 ```
-https://raw.githubusercontent.com/littlechintw/NTPU-RSS/main/NTPU_News.xml
+https://raw.githubusercontent.com/jenhuang-tw/ntpu-rss/main/NTPU_News.xml
 ```
 
 ## 🤝 Special thanks
