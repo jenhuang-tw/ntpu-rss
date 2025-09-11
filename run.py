@@ -27,11 +27,11 @@ class item(object):
 
 def getChannel():
     # GET XML Channel
-    title = "NTPU 國立臺北大學 - 首頁公告"
+    title = "臺北大學校首頁"
     author = "NTPU 國立臺北大學"
     image = "https://new.ntpu.edu.tw/assets/logo/ntpu_logo.png"
     link = "https://new.ntpu.edu.tw/news"
-    description = "NTPU 國立臺北大學 - 首頁公告"
+    description = "臺北大學校首頁公告（含各單位）"
     language = "zh_TW"
     copyright = "NTPU 國立臺北大學 - 首頁公告"
     print("+ [1] Create XML Channel")
