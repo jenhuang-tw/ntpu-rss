@@ -39,9 +39,47 @@ def getChannel():
 
 def getItem():
     now_time = str(time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.localtime()))
-    post_data = {
-        "query": "{\npublications(\nsort: \"publishAt:desc,createdAt:desc\"\nstart: 0\nlimit: 20\nwhere: {\n  isEvent: false\n  sitesApproved_contains: \"www_ntpu\"\n  \n  lang_ne: \"english\"\n  tags_contains: [[]]\n  \n  publishAt_lte: \"" + now_time + "\" unPublishAt_gte: \"" + now_time + "\" \n}\n    ) {\n_id\ncreatedAt\ntitle\ncontent\ntitle_en\ncontent_en\ntags\ncoverImage {\n  url\n}\ncoverImageDesc\ncoverImageDesc_en\nbannerLink\nfiles {\n  url\n  name\n  mime\n}\nfileMeta\npublishAt\n    }}"
-    }
+
+    post_data = { "query": f"""
+        {{
+        publications(
+            sort: "publishAt:desc,createdAt:desc"
+            start: 0
+            limit: 20
+            where: {{
+            isEvent: false
+            sitesApproved_contains: "www_ntpu"
+            lang_ne: "english"
+            tags_contains: [[]]
+            publishAt_lte: "{now_time}" 
+            unPublishAt_gte: "{now_time}" 
+            }}
+        ) {{
+            _id
+            createdAt
+            title
+            content
+            title_en
+            content_en
+            tags
+            coverImage {{
+            url
+            }}
+            coverImageDesc
+            coverImageDesc_en
+            bannerLink
+            files {{
+            url
+            name
+            mime
+            }}
+            fileMeta
+            publishAt
+        }}
+        }}
+        """ 
+        }
+
     r = requests.post('https://api-carrier.ntpu.edu.tw/strapi', data = post_data)
 
     obj = json.loads(r.text)
