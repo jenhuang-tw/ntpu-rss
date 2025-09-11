@@ -47,7 +47,7 @@ def getItem():
             limit: 20
             where: {{
             isEvent: false
-            sitesApproved_contains: "www_ntpu"
+            sitesApproved_contains: "www_ntpu", "internal_ntpu", "law_ntpu", "cic_ntpu"
             lang_ne: "english"
             tags_contains: [[]]
             publishAt_lte: "{now_time}" 
