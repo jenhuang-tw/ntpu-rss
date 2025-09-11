@@ -1,5 +1,4 @@
-import requests, sys, datetime, time, json, html
-from bs4 import BeautifulSoup
+import requests, sys, datetime, time, json, re
 
 # GMT Format
 GMT_FORMAT =  '%a, %d %b %Y %H:%M:%S GMT'
@@ -58,9 +57,9 @@ def getItem():
             _id
             createdAt
             title
-            content
+            
             title_en
-            content_en
+            
             tags
             coverImage {{
             url
@@ -75,6 +74,7 @@ def getItem():
             }}
             fileMeta
             publishAt
+            contactPerson
         }}
         }}
         """ 
@@ -89,29 +89,28 @@ def getItem():
     for news in news_json:
         setDetails(news)
 
-def cleanMe(html):
-    soup = BeautifulSoup(html, "html.parser") # create a new bs4 object from the html data loaded
-    for script in soup(["script", "style"]): # remove all javascript and stylesheet code
-        script.extract()
-    # get text
-    text = soup.get_text()
-    # break into lines and remove leading and trailing space on each
-    lines = (line.strip() for line in text.splitlines())
-    # break multi-headlines into a line each
-    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-    # drop blank lines
-    text = '\n'.join(chunk for chunk in chunks if chunk)
-    return text
-
 def setDetails(news):
     # PUT Vulnerability Details
     title = news['title']
     if title == "":
         return "no"
     link = "https://new.ntpu.edu.tw/news/" + news['_id']
-    description = news['content'].replace("<p>&nbsp;</p>", "").replace("<o:p>", "<p>").replace("</o:p>", "</p>").replace("color=black", "color=\"black\"").replace("&nbsp;", "").replace("&", "-")
+
+    desTag = ""
+    if (news['tags'] != None) and (len(news['tags']) != 0):
+        desTag1 = ", 🏷️ "
+        desTag2 = ",".join ( news['tags'] )
+        desTag = desTag1 + desTag2
+    
+    desContact = "無聯絡人資訊"
+    if news['contactPerson'] != "":
+        desContact = re.sub(r'\d+', '', news['contactPerson']) # Remove digits
+        desContact = desContact.replace(" ","") # Remove whitespace
+        desContact = desContact.replace("分機","").replace("#","").replace("、","").replace("；","") # Remove phone
+    
+    description = "🪶 "+desContact  + desTag + "."
     pubDate = datetime.datetime.strptime(news['publishAt'], '%Y-%m-%dT%H:%M:%S.000Z').strftime(GMT_FORMAT)
-    items.append(item(title, link, cleanMe(html.unescape(description)), pubDate))
+    items.append( item(title, link, description, pubDate) )
 
 def createRSS(channel):
     
@@ -135,10 +134,11 @@ def createRSS(channel):
     for item in items:
         rss_text += r'<item>' \
                     r'<title>{}</title>' \
-                    r'<link>{}</link>' \
-                    r'<description>{}</description>' \
                     r'<pubDate>{}</pubDate>' \
+                    r'<description>{}</description>' \
+                    r'<link>{}</link>' \
                     r'</item>' \
+                    "\n" \
             .format(item.title, item.pubDate, item.description, item.link)
 
     rss_text += r'</channel></rss>'
