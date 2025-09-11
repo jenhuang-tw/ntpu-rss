@@ -2,6 +2,9 @@ name: Python CI
 on:
   schedule:
     - cron:  '0/60 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
     
 jobs:
   build:
@@ -22,12 +25,12 @@ jobs:
     - name: Commit
       continue-on-error: true
       run: |
-        git config --global user.email "littlechintw@gmail.com"
-        git config --global user.name "littlechintw"
-        git add .
-        git commit -m "Upgrade rss by action"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add .
+          git commit -m "Upgrade rss by action"
     - name: Push Changes
       if: success()
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.MY_GIT_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
