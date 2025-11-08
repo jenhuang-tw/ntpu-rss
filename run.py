@@ -85,16 +85,21 @@ def getItem():
         }
 
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': 'https://new.ntpu.edu.tw/',
+        'Sec-Ch-Ua': '"Chromium";v="142", "Brave";v="142", "Not_A Brand";v="99"',
+        'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-Ch-Ua-Platform': '"Windows"',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'
     }
 
     try:
         r = requests.post(
             'https://api-carrier.ntpu.edu.tw/strapi', 
-            data=post_data, 
+            json=post_data, 
             verify=False, 
             headers=headers, 
-            timeout=30
+            timeout=60
         )
     except requests.exceptions.Timeout:
         print("錯誤：請求逾時 (Timeout)。伺服器在 30 秒內沒有回應。")
