@@ -86,7 +86,32 @@ def getItem():
 
     r = requests.post('https://api-carrier.ntpu.edu.tw/strapi', data = post_data, verify=False)
 
-    obj = json.loads(r.text)
+    # --- 因取消驗證後出現執行錯誤，需要偵錯與錯誤處理 ---
+    # 1. 檢查 HTTP 狀態碼
+    if r.status_code != 200:
+        print(f"錯誤：伺服器回應狀態碼非 200，而是 {r.status_code}")
+        print("--- 伺服器原始回應 (前 500 字元) ---")
+        print(r.text[:500])
+        print("-----------------------------------")
+        # 既然沒有拿到資料，就直接退出程式
+        sys.exit(1) # 確保你檔案頂端有 import sys
+
+    # 2. 檢查回應是否為空
+    if not r.text:
+        print("錯誤：伺服器回傳了空的內容。")
+        sys.exit(1)
+
+    # 3. 使用 try...except 來捕捉 JSON 錯誤
+    try:
+        obj = json.loads(r.text)
+    except json.JSONDecodeError:
+        print("錯誤：無法解析 JSON。伺服器可能回傳了 HTML 錯誤頁面。")
+        print("--- 伺服器原始回應 (前 500 字元) ---")
+        print(r.text[:500])
+        print("-----------------------------------")
+        sys.exit(1)
+    # --- 偵錯結束 ---
+    
     news_json = obj['data']['publications']
 
     # SET List
