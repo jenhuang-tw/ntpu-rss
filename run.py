@@ -84,7 +84,24 @@ def getItem():
         """ 
         }
 
-    r = requests.post('https://api-carrier.ntpu.edu.tw/strapi', data = post_data, verify=False)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+    }
+
+    try:
+        r = requests.post(
+            'https://api-carrier.ntpu.edu.tw/strapi', 
+            data=post_data, 
+            verify=False, 
+            headers=headers, 
+            timeout=30
+        )
+    except requests.exceptions.Timeout:
+        print("錯誤：請求逾時 (Timeout)。伺服器在 30 秒內沒有回應。")
+        sys.exit(1)
+    except requests.exceptions.RequestException as e:
+        print(f"錯誤：發生未預期的請求錯誤: {e}")
+        sys.exit(1)
 
     # --- 因取消驗證後出現執行錯誤，需要偵錯與錯誤處理 ---
     # 1. 檢查 HTTP 狀態碼
