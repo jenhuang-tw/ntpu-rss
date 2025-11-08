@@ -1,7 +1,11 @@
 import requests, sys, datetime, time, json, re
+import urllib3
 
 # GMT Format
 GMT_FORMAT =  '%a, %d %b %Y %H:%M:%S GMT'
+
+# 停用 InsecureRequestWarning 警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # rss channel
 class channel(object):
@@ -80,7 +84,7 @@ def getItem():
         """ 
         }
 
-    r = requests.post('https://api-carrier.ntpu.edu.tw/strapi', data = post_data)
+    r = requests.post('https://api-carrier.ntpu.edu.tw/strapi', data = post_data, verify=False)
 
     obj = json.loads(r.text)
     news_json = obj['data']['publications']
